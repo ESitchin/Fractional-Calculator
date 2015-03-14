@@ -1,0 +1,303 @@
+import java.util.*;
+
+public class FracCalc {
+	private Scanner console = new Scanner(System.in);
+	private String a, b, c, errors;
+	private int minusone;
+	private int d, escape, h, l, exterminate, p;
+	private String e, f, i, j, m, n, q, r;
+	private int t, u, v, w, x, y;
+	public void run() {
+		reset();
+		System.out.println("Enter an input:");             
+        a = console.next();
+        b = console.next();
+        c = console.next();
+        parse(a);
+        operator(b);
+        parse(c);
+        transform();
+        processA();
+        processC();
+        arithmatic();
+        quit();
+	}
+	private void parse(String a1) {
+		for (int b = 0; b < a1.length(); b++) {
+            if (a1.charAt(b) != '1' && a1.charAt(b) != '2' && a1.charAt(b) != '3' && a1.charAt(b) != '4' && a1.charAt(b) != '5' &&
+                a1.charAt(b) != '6' && a1.charAt(b) != '7' && a1.charAt(b) != '8' && a1.charAt(b) != '9' && a1.charAt(b) != '0' &&
+                a1.charAt(b) != '/' && a1.charAt(b) != '_' && a1.charAt(b) != '-') {
+                System.out.println("Invalid Input. Try Again:");
+                run();
+            }
+        }
+	}
+	private void operator(String b1) {
+		if (!b1.equals("+") && !b1.equals("-") && !b1.equals("*") && !b1.equals("/")) {
+            System.out.println("Invalid Input. Try Again:");
+            run();
+        }
+	}
+	private void transform() {
+		if (c.charAt(0) == '-' && b.equals("+")) { // "c" should not contain '-'
+            c = c.substring(1);
+            b = "-";
+        } else if (c.charAt(0) == '-' && b.equals("-")) { // No double negatives!
+            c = c.substring(1);
+            b = "+";
+        } else if ((b.equals("*") || b.equals("/")) && c.charAt(0) == '-' && a.charAt(0) == '-') { // No double negatives here either!
+            c = c.substring(1);
+            a = a.substring(1);
+        } else if ((b.equals("*") || b.equals("/")) && c.charAt(0) == '-') { // The easy way to deal with negative values
+            minusone = 1;
+            c = c.substring(1);
+        } else if ((b.equals("*") || b.equals("/")) && a.charAt(0) == '-') { // See above
+            minusone = 1;
+            a = a.substring(1);
+        }
+        if (a.charAt(0) == '-' && b.equals("+")) { // "a" should not contain '-'
+            errors = a.substring(1);
+            a = c;
+            c = errors;
+            b = "-";
+        } else if (a.charAt(0) == '-' && b.equals("-")) { // See above
+            a = a.substring(1);
+            b = "+";
+            minusone = 1;
+        }
+	}
+	private void processA() {
+		l = 1;
+        while (l < a.length() && a.charAt(l) != '_' && a.charAt(l) != '/') {
+            l++;
+        }
+        m = a.substring(0, l);
+        if (l < a.length()) {
+            n = a.substring(l + 1);
+            if (a.charAt(l) != '_') { // For mixed fractions
+                exterminate++;
+            } 
+        } else {
+            n = m;
+            exterminate += 2;
+        }
+        p = 1;
+        while (p < n.length() && n.charAt(p) != '/') {
+            p++;
+        }
+        q = n.substring(0, p);
+        if (p < n.length()) {
+            r = n.substring(p + 1);
+        } else {
+            r = q;
+        }
+        if (exterminate == 1) {
+            u = createInts(m);
+            v = createInts(n);
+            if (u % v == 0) {
+                v = u / v;
+                u = 0;
+            } else if (u / v > 0) {
+                t += u / v;
+                u -= ((u / v) * v);
+            }
+        } else if (exterminate == 2) {
+            v = createInts(a);
+        } else {
+            t = createInts(m);
+            u = createInts(q);
+            v = createInts(r);
+            if (u % v == 0) {
+                v = t + (u / v);
+                t = 0;
+                u = 0;
+            } else if (u / v >= 1) {
+                t = t + (u / v);
+                u = u - v * (u / v);
+            }
+        }
+	}
+	private void processC() {
+		d = 1;
+        while (d < c.length() && c.charAt(d) != '_' && c.charAt(d) != '/') {
+            d++;
+        }
+        e = c.substring(0, d);
+        if (d < c.length()) {
+            f = c.substring(d + 1);
+            if (c.charAt(d) != '_') {
+                escape++;
+            }
+        } else {
+            f = e;
+            escape += 2;
+        }
+        h = 1;
+        while (h < f.length() && f.charAt(h) != '/') {
+            h++;
+        }
+        i = f.substring(0, h);
+        if (h < f.length()) {
+            j = f.substring(h + 1);
+        } else {
+            j = i;
+        }
+        if (escape == 1) {
+            x = createInts(e);
+            y = createInts(f);
+            if (x % y == 0) {
+                y = x / y;
+                x = 0;
+            } else if (x / y > 0) {
+                w += x / y;
+                x -= ((x / y) * y);
+            }
+        } else if (escape == 2) {
+            y = createInts(c);
+        } else {
+            w = createInts(e);
+            x = createInts(i);
+            y = createInts(j);
+            if (x % y == 0) {
+                y = w + (x / y);
+                w = 0;
+                x = 0;
+            } else if (x / y >= 1) {
+                w = w + (x / y);
+                x = x - y * (x / y);
+            }
+        }
+	}
+	private int createInts(String g) {
+        int b1 = g.length() - 1;
+        int c1= 0;
+        int d1 = 0;
+        for (int e1 = b1; e1 >= 0; e1--) {
+            d1 = g.charAt(e1) - 48;
+            c1 += d1 * (int) Math.pow(10, (b1 - e1));
+        }
+        return c1;
+    }
+	private void arithmatic() {
+		u += t * v;
+        if (t == 0 && u == 0) {
+            u = v;
+            v = 1;
+        }
+        t = 0;
+        x += w * y;
+        if (w == 0 && x == 0) {
+            x = y;
+            y = 1;
+        }
+        w = 0;
+        if (b.equals("+")) {
+            addition();
+        } else if (b.equals("-")) {
+            subtraction();
+        } else if (b.equals("*")) {
+            multiplication();
+        } else {
+            division();
+        }
+	}
+	private void addition() {
+    	if (minusone == 1) {
+        	System.out.print("-");
+    	}
+    	x = u * y + x * v;
+    	y = v * y;
+    	int x1 = x;
+    	int y1 = y;
+    	while (y1 != 0) {
+			int i = y1;
+			y1 = x1 % y1;
+			x1 = i;
+    	}
+    	int gcd = x1;
+    	y /= gcd;
+    	x /= gcd;
+    	if (x % y == 0) {
+        	System.out.println(x / y);
+    	} else if (x / y > 0) {
+        	t += x / y;
+        	u = x % y;
+        	System.out.println(t + "_" + u + "/" + y);
+    	} else {
+        	System.out.println(x + "/" + y);
+    	}      	 
+	}
+	private void subtraction() {
+	 	x = u * y - x * v;
+    	y = v * y;
+    	int x1 = x;
+    	int y1 = y;
+    	while (y1 != 0) {
+			int i = y1;
+			y1 = x1 % y1;
+			x1 = i;
+    	}
+    	int gcd = x1;
+    	y /= gcd;
+    	x /= gcd;
+	 	if (x % y == 0) {
+        	System.out.println(x / y);
+    	} else if (Math.abs(x / y) > 0) {
+        	t += x / y;
+        	u = Math.abs(x % y);
+        	System.out.println(t + "_" + u + "/" + y);
+    	} else {
+        	System.out.println(x + "/" + y);
+    	}
+	}
+    private void multiplication() {      	 
+    	if (minusone == 1) {
+        	System.out.print("-");
+    	}
+    	x = u * x;
+    	y = v * y;
+    	int x1 = x;
+    	int y1 = y;
+    	while (y1 != 0) {
+			int i = y1;
+			y1 = x1 % y1;
+			x1 = i;
+    	}
+    	int gcd = x1;
+    	y /= gcd;
+    	x /= gcd;
+    	if (x == 0) {
+        	System.out.println(0);
+    	} else if (x % y == 0) {
+        	System.out.println(x / y);
+    	} else if (x / y > 0) {
+        	t += x / y;
+        	u = x % y;
+        	System.out.println(t + "_" + u + "/" + y);
+    	} else {
+        	System.out.println(x + "/" + y);
+    	}
+	}
+    private void division() {
+        int z = x;
+        x = y;
+        y = z;
+        multiplication();
+    }
+    private void quit() {
+    	System.out.print("Run Again? ");
+        String quit = console.next();
+        if (!quit.equalsIgnoreCase("yes")) {
+            System.out.println("Goodbye!");
+        } else {
+            run();
+        }
+    }
+    private void reset() {
+    	a = ""; b = ""; c = ""; errors = "";
+    	minusone = 0;
+    	d = 0; escape = 0; h = 0; l = 0; exterminate = 0; p = 0;
+    	e = ""; f = ""; i = ""; j = ""; m = ""; n = ""; q = ""; r = "";
+    	t = 0; u = 0; v = 0; w = 0; x = 0; y = 0;
+    }
+}
