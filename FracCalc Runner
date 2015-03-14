@@ -1,0 +1,6 @@
+public class FracCalcRunner {
+	public static void main(String[] args) {		
+		FracCalc calc = new FracCalc();
+		calc.run();
+	}
+}
